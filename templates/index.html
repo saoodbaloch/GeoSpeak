@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GEO SPEAK</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body class="light-mode">
+
+    <div class="container">
+        <!-- Header Section -->
+        <header class="header">
+            <h1><i>Geo Speak</i></h1>
+            <button id="themeSwitcher"><i class="fas fa-moon"></i> Dark Mode</button>
+        </header>
+        
+        <!-- Language Selection Section -->
+        <div class="language-selection">
+            <div class="lang-select">
+                <select id="srcLanguage" name="srcLanguage">
+                    <option value="BG">Bulgarian</option>
+                    <option value="CS">Czech</option>
+                    <option value="DA">Danish</option>
+                    <option value="DE">German</option>
+                    <option value="EL">Greek</option>
+                    <option value="EN">English</option>
+                    <option value="ES">Spanish</option>
+                    <option value="ET">Estonian</option>
+                    <option value="FI">Finnish</option>
+                    <option value="FR">French</option>
+                    <option value="HU">Hungarian</option>
+                    <option value="ID">Indonesian</option>
+                    <option value="IT">Italian</option>
+                    <option value="JA">Japanese</option>
+                    <option value="KO">Korean</option>
+                    <option value="LT">Lithuanian</option>
+                    <option value="LV">Latvian</option>
+                    <option value="NB">Norwegian (Bokmål)</option>
+                    <option value="NL">Dutch</option>
+                    <option value="PL">Polish</option>
+                    <option value="PT">Portuguese (EU)</option>
+                    <option value="PT-BR">Portuguese (Brazil)</option>
+                    <option value="RO">Romanian</option>
+                    <option value="RU">Russian</option>
+                    <option value="SK">Slovak</option>
+                    <option value="SL">Slovenian</option>
+                    <option value="SV">Swedish</option>
+                    <option value="TR">Turkish</option>
+                    <option value="UK">Ukrainian</option>
+                    <option value="ZH">Chinese (Simplified)</option>
+                </select>
+            </div>
+            <div class="swap" id="languageSwap">
+                <i class="fas fa-exchange-alt"></i>
+            </div>
+
+            <div class="lang-select">
+                <select id="destLanguage" name="destLanguage">
+                    <option value="BG">Bulgarian</option>
+                    <option value="CS">Czech</option>
+                    <option value="DA">Danish</option>
+                    <option value="DE">German</option>
+                    <option value="EL">Greek</option>
+                    <option value="EN-GB">English</option>
+                    <option value="ES">Spanish</option>
+                    <option value="ET">Estonian</option>
+                    <option value="FI">Finnish</option>
+                    <option value="FR">French</option>
+                    <option value="HU">Hungarian</option>
+                    <option value="ID">Indonesian</option>
+                    <option value="IT">Italian</option>
+                    <option value="JA">Japanese</option>
+                    <option value="KO">Korean</option>
+                    <option value="LT">Lithuanian</option>
+                    <option value="LV">Latvian</option>
+                    <option value="NB">Norwegian (Bokmål)</option>
+                    <option value="NL">Dutch</option>
+                    <option value="PL">Polish</option>
+                    <option value="PT">Portuguese (EU)</option>
+                    <option value="PT-BR">Portuguese (Brazil)</option>
+                    <option value="RO">Romanian</option>
+                    <option value="RU">Russian</option>
+                    <option value="SK">Slovak</option>
+                    <option value="SL">Slovenian</option>
+                    <option value="SV">Swedish</option>
+                    <option value="TR">Turkish</option>
+                    <option value="UK">Ukrainian</option>
+                    <option value="ZH">Chinese (Simplified)</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Text Input for Translation -->
+        <div class="translation-container">
+            <div class="input-area">
+                <textarea id="textToTranslate" name="textToTranslate" placeholder="Enter text..."></textarea>
+            </div>
+            <div class="output-area">
+                <textarea id="translatedText" placeholder="Translation..." readonly></textarea>
+            </div>
+        </div>
+
+        <!-- Definition Box -->
+        <div id="definition" class="definition-box">
+            <h3>Unlock the Mystery: Your Definition is Here!</h3>
+            <div id="definitionContent">
+                <!-- Definition content will be dynamically inserted here -->
+            </div>
+        </div>
+
+        <!-- Control Buttons -->
+        <div class="control-buttons">
+            <button id="translateButton"><i class="fas fa-play"></i> Translate</button>
+            <button id="copyButton"><i class="fas fa-copy"></i> Copy</button>
+            <button id="clearButton"><i class="fas fa-times"></i> Clear</button>
+            <button id="historyButton"><i class="fas fa-history"></i> History</button>
+        </div>
+
+        <!-- History Modal -->
+        <div id="historyModal" class="modal">
+            <div class="modal-content">
+                <span id="closeHistoryModal" class="close">&times;</span>
+                <h2>Translation History</h2>
+                <table id="historyTable">
+                    <thead>
+                        <tr>
+                            <th>Source Text</th>
+                            <th>Translated Text</th>
+                            <th>Source Language</th>
+                            <th>Target Language</th>
+                            <th>Timestamp</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- History will be inserted here dynamically -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- JavaScript -->
+        <script>
+            // Language swap functionality
+            document.getElementById('languageSwap').addEventListener('click', function() {
+                const srcLanguage = document.getElementById('srcLanguage');
+                const destLanguage = document.getElementById('destLanguage');
+
+                // Swap the selected options
+                const tempValue = srcLanguage.value;
+                srcLanguage.value = destLanguage.value;
+                destLanguage.value = tempValue;
+            });
+
+            // Translation functionality
+            document.getElementById('translateButton').addEventListener('click', function(event) {
+                event.preventDefault();
+                const textToTranslate = document.getElementById('textToTranslate').value;
+                const srcLanguage = document.getElementById('srcLanguage').value;
+                const destLanguage = document.getElementById('destLanguage').value;
+
+                fetch('/translate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: new URLSearchParams({
+                        textToTranslate: textToTranslate,
+                        srcLanguage: srcLanguage,
+                        destLanguage: destLanguage
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('translatedText').value = data.translated_text;
+
+                    // Handle and display the definition if available
+                    const definitionContainer = document.getElementById('definitionContent');
+                    if (data.definition && data.definition.length > 0) {
+                        definitionContainer.innerHTML = `<strong>Definition:</strong> ${data.definition.join(', ')}`;
+                    } else {
+                        definitionContainer.innerHTML = '<strong>Definition:</strong> No definition found.';
+                    }
+                });
+            });
+
+            // Copy translation
+            document.getElementById('copyButton').addEventListener('click', function() {
+                const outputText = document.getElementById('translatedText');
+                outputText.select();
+                document.execCommand('copy');
+            });
+
+            // Clear text areas and definition box
+            document.getElementById('clearButton').addEventListener('click', function() {
+                document.getElementById('textToTranslate').value = '';     // Clear the input text
+                document.getElementById('translatedText').value = '';      // Clear the translated text
+                document.getElementById('definitionContent').innerHTML = ''; // Clear the definition content
+            });
+
+            // History button logic
+            document.getElementById('historyButton').addEventListener('click', function() {
+                fetch('/history')
+                .then(response => response.json())
+                .then(data => {
+                    const historyTableBody = document.querySelector('#historyTable tbody');
+                    historyTableBody.innerHTML = '';  // Clear the table body
+
+                    // Insert each history entry into the table
+                    data.forEach(entry => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                                                   <td>${entry.source_text}</td>
+                            <td>${entry.translated_text}</td>
+                            <td>${entry.source_language}</td>
+                            <td>${entry.target_language}</td>
+                            <td>${entry.timestamp}</td>
+                        `;
+                        historyTableBody.appendChild(row);
+                    });
+
+                    // Display the history modal
+                    document.getElementById('historyModal').style.display = 'block';
+                });
+            });
+
+            // Close the history modal
+            document.getElementById('closeHistoryModal').addEventListener('click', function() {
+                document.getElementById('historyModal').style.display = 'none';
+            });
+
+            // Theme switcher functionality
+            const themeSwitcher = document.getElementById('themeSwitcher');
+            themeSwitcher.addEventListener('click', () => {
+                const body = document.body;
+                const currentTheme = body.classList.contains('light-mode') ? 'light' : 'dark';
+
+                if (currentTheme === 'light') {
+                    body.classList.remove('light-mode');
+                    body.classList.add('dark-mode');
+                    themeSwitcher.innerHTML = '<i class="fas fa-sun"></i> Light Mode';
+                } else {
+                    body.classList.remove('dark-mode');
+                    body.classList.add('light-mode');
+                    themeSwitcher.innerHTML = '<i class="fas fa-moon"></i> Dark Mode';
+                }
+            });
+
+            // Close the modal when clicking outside of it
+            window.addEventListener('click', function(event) {
+                const modal = document.getElementById('historyModal');
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+        </script>
+    </div>
+</body>
+</html>
+    
