@@ -20,7 +20,7 @@ Local Setup (Windows)
 
 Clone the repository:
 
-git clone https://github.com/YOUR-USERNAME/GeoSpeak.git
+git clone https://github.com/saoodbaloch/GeoSpeak.git
 cd GeoSpeak
 
 
